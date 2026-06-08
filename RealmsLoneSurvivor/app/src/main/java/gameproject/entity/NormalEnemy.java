@@ -1,0 +1,64 @@
+package gameproject.entity;
+
+import gameproject.GamePanel;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.util.ArrayList;
+import java.util.Random;
+
+public class NormalEnemy extends Enemy {
+    private float wanderX, wanderY;
+    private int wanderTimer = 0;
+    private Random rand = new Random();
+    private int tier;
+
+    public NormalEnemy(float startX, float startY, int tier, int surviveTimeSeconds) {
+        super(startX, startY, 30, 0, 0, Color.WHITE);
+        this.isBoss = false;
+        this.tier = tier;
+
+        switch (tier) {
+            case 1 -> {
+                this.maxHp = 20;
+                this.speed = 1.2f;
+            }
+            case 2 -> {
+                this.maxHp = 30;
+                this.speed = 1.5f;
+            }
+            case 3 -> {
+                this.maxHp = 50;
+                this.speed = 1.8f;
+            }
+            case 4 -> {
+                this.maxHp = 70;
+                this.speed = 2.1f;
+            }
+            default -> {
+                this.maxHp = 100;
+                this.speed = 2.4f;
+                this.tier = 5;
+            }
+        }
+        this.maxHp = (int) (this.maxHp * (1.0f + (surviveTimeSeconds / 60.0f) * 0.1f));
+        this.hp = this.maxHp;
+    }
+
+    @Override
+    public void update(float playerX, float playerY, float speedMultiplier, ArrayList<Enemy> allEnemies, int screenW,
+            int screenH, GamePanel panel) {
+
+        // Gọi bộ não AI tập trung để xử lý di chuyển và va chạm (Sliding Collision)
+        EnemyController.moveEnemy(this, panel, speedMultiplier);
+
+        // AI Phá vật cản (Giữ nguyên tính năng đặc trưng của bạn)
+        float fdx = panel.mapManager.getFlowDirX((int) x + size / 2, (int) y + size / 2);
+        float fdy = panel.mapManager.getFlowDirY((int) x + size / 2, (int) y + size / 2);
+        handleObstacleBreaking(fdx * speed, fdy * speed, panel);
+    }
+
+    @Override
+    public void draw(Graphics g) {
+        drawSprite(g, "enemy" + tier);
+    }
+}

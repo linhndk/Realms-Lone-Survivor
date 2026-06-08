@@ -1,0 +1,23 @@
+# --- Gradle ---
+.gradle/
+build/
+
+# --- IDEs ---
+.vscode/
+.idea/
+*.iml
+*.ipr
+*.iws
+.settings/
+.project
+.classpath
+
+# --- OS ---
+Thumbs.db
+.DS_Store
+
+# --- App Specific ---
+*.dat
+*.log
+bin/
+out/
